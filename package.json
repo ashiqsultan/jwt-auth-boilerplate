@@ -1,0 +1,23 @@
+{
+  "name": "auth_boiler_plate",
+  "version": "1.0.0",
+  "description": "This is a boiler plate for implementing a Authentication using only JWT and no Passport",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "devstart": "nodemon app.js"
+  },
+  "author": "ashiqsultan",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "express-validator": "^6.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.7.1"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.2"
+  }
+}
