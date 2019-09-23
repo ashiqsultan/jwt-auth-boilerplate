@@ -9,7 +9,7 @@ const auth = require('../../middleware/auth')
 
 /*
 @route  GET api/auth
-@desc   Test route
+@desc   Using our auth middleware ewe check whether the JWT token is a valid one
 @access Public
 */
 router.get('/', auth, async (req, res) => {
@@ -23,6 +23,11 @@ router.get('/', auth, async (req, res) => {
 })
 
 
+/*
+@route  POST api/auth
+@desc   Login route, Given username and password this generates a JWT token
+@access Public
+*/
 router.post(
     '/',
     [
@@ -38,13 +43,13 @@ router.post(
         const { email, password } = req.body;
 
         try {
-            // Compare the passwords to ensure
+            // Getting User details from the provided email, if no email means no user exists
             let user = await User.findOne({ email });
             if (!user) {
                 return res.status(400).json({ errors: [{ message: 'Invalid Credentials' }] })
             }
 
-            //Comparing password 
+            // Comparing password 
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return res
@@ -52,13 +57,14 @@ router.post(
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             }
 
-            //Return JSON Web Token
+            //Initiate a Payload to be sent with JWT
             const payload = {
                 user: {
                     id: user.id,
                 }
             };
-
+            
+            //Return JSON Web Token
             jwt.sign(
                 payload,
                 process.env.JWT_SECTER,
