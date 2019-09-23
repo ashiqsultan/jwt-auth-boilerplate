@@ -1,35 +1,19 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../../model/User')
-const auth = require('../../middleware/auth')
+const router = express.Router();
 
 
 /*
-@route  GET api/auth
-@desc   Using our auth middleware ewe check whether the JWT token is a valid one
-@access Public
-*/
-router.get('/', auth, async (req, res) => {
-    try {
-        const user = await User.findById(req.userdata.id).select('-password');
-        res.json(user);
-    } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
-    }
-})
-
-
-/*
-@route  POST api/auth
-@desc   Login route, Given username and password this generates a JWT token
+@route  POST api/login
+@desc   Login route, Given username and password this sends a JWT token
 @access Public
 */
 router.post(
-    '/',
+    '/login',
+    //Validation Check middleware
     [
         check('email', 'Please include a valid email').isEmail(),
         check('password', 'Password is required').not().isEmpty()
@@ -39,17 +23,18 @@ router.post(
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
         }
-        //extracting data from the request body
+        //Extracting data from the request body
         const { email, password } = req.body;
 
         try {
-            // Getting User details from the provided email, if no email means no user exists
+            // Getting User details from the provided email, if no email means no user so send error
             let user = await User.findOne({ email });
             if (!user) {
                 return res.status(400).json({ errors: [{ message: 'Invalid Credentials' }] })
             }
 
-            // Comparing password 
+            //If email exists then check password match
+            // Comparing password by decrypting the password using bcryptjs
             const isMatch = await bcrypt.compare(password, user.password);
             if (!isMatch) {
                 return res
@@ -58,19 +43,21 @@ router.post(
             }
 
             //Initiate a Payload to be sent with JWT
+            //You can send anything in the token, in this example we are sending only user id and email we got from database
             const payload = {
                 user: {
                     id: user.id,
+                    email: user.email
                 }
             };
-            
+
             //Return JSON Web Token
             jwt.sign(
                 payload,
                 process.env.JWT_SECTER,
                 { expiresIn: "2 days" },
                 (error, token) => {
-                    if (error) throw error;
+                    if (error) throw error; //throw error if our jwt sign goes wrong
                     res.json({ token });
                 }
             );

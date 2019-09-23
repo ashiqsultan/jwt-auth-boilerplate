@@ -1,3 +1,4 @@
+/* Only purpose of this is to sucessfully connect to Mongo DB cloud without any warning or error */
 const mongoose = require('mongoose');
 require('dotenv').config()
 

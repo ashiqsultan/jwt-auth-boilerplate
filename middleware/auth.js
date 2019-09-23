@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 const SECRET = process.env.JWT_SECTER;
 
-/* The functionality of this middleware is to get the token from the header and check whether is it still valid*/
+/* The functionality of this middleware is to get the token from the header and check whether is it a valid token.
+If the token is valid the next middleware in the stack is called else Status 401 is sent
+*/
 
 module.exports = function (req, res, next) {
     //Get token from header
