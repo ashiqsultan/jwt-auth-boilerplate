@@ -19,6 +19,6 @@ app.use('/api/login', require('./routes/api/login'));
 app.use('/api/signup', require('./routes/api/signup'));
 app.use('/api/protectedRoute', require('./routes/api/protectedRoute'));
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT //|| 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

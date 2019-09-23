@@ -1,9 +1,9 @@
 const express = require('express');
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../../model/User')
+const sentJWT = require('../../microservices/sendJWT')
+const encryptPassword = require('../../microservices/encryptPassword')
 
 /*
 @route  POST api/signup
@@ -11,7 +11,7 @@ const User = require('../../model/User')
 @access Public
 */
 router.post(
-    '/signup',
+    '/',
     [
         check('name', 'Name is required').not().isEmpty(),
         check('email', 'Please include a valid email').isEmail(),
@@ -28,12 +28,10 @@ router.post(
         try {
             //See if user exists
             let user = await User.findOne({ email });
-
+            //If user already exists send error
             if (user) {
                 return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
             }
-
-            //Get user Gravatar
 
             //Save the user to Database and Encrypt Password
             user = new User({
@@ -42,29 +40,13 @@ router.post(
                 password
             });
             //Encrypt Password
-            const salt = await bcrypt.genSalt(10);
+            user.password = await encryptPassword(password);
 
-            user.password = await bcrypt.hash(password, salt);
-
-            // Save user data with encrypted password to database
+            //Save User to DB
             await user.save();
 
             //Return JSON Web Token
-            const payload = {
-                user: {
-                    id: user.id,
-                }
-            };
-
-            jwt.sign(
-                payload,
-                process.env.JWT_SECTER,
-                { expiresIn: "2 days" },
-                (error, token) => {
-                    if (error) throw error;
-                    res.json({ token });
-                }
-            );
+            await sentJWT(res, user);
         } catch (error) {
             console.error(error.message);
             res.status(500).send('Server Error');

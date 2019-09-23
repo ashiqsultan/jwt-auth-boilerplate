@@ -1,9 +1,9 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
 const User = require('../../model/User')
 const router = express.Router();
+const sentJWT = require('../../microservices/sendJWT')
 
 
 /*
@@ -12,7 +12,7 @@ const router = express.Router();
 @access Public
 */
 router.post(
-    '/login',
+    '/',
     //Validation Check middleware
     [
         check('email', 'Please include a valid email').isEmail(),
@@ -40,27 +40,10 @@ router.post(
                 return res
                     .status(400)
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
+            }else{
+                //Send JWT, the below method sends jwt 
+                await sentJWT(res, user);
             }
-
-            //Initiate a Payload to be sent with JWT
-            //You can send anything in the token, in this example we are sending only user id and email we got from database
-            const payload = {
-                user: {
-                    id: user.id,
-                    email: user.email
-                }
-            };
-
-            //Return JSON Web Token
-            jwt.sign(
-                payload,
-                process.env.JWT_SECTER,
-                { expiresIn: "2 days" },
-                (error, token) => {
-                    if (error) throw error; //throw error if our jwt sign goes wrong
-                    res.json({ token });
-                }
-            );
         } catch (error) {
             console.error(error.message);
             res.status(500).send('Server Error');
