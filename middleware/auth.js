@@ -11,7 +11,7 @@ module.exports = function (req, res, next) {
     const token = req.header('our-app-token'); // KEY, the token should be sent in the header with this key
 
     if (!token) {
-        return res.status(401).json({ message: ' No Token, Authorization denied smile' });
+        return res.status(401).json({ message: 'No Token, Authorization denied' });
     }
 
     try {
@@ -20,7 +20,7 @@ module.exports = function (req, res, next) {
         req.userdata = decoded.user;
         next();
     } catch (error) {
-        res.status(401).json({ msg: 'Token is not valid' });
+        res.status(401).json({ message: 'Token is not valid' });
     }
 }
 
