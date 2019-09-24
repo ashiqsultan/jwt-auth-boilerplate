@@ -8,7 +8,7 @@ This repo is very minimal, this does only the following task.
 * Login users
 * Check validity of token using our simple Auth middleware
 
-This uses Mongo DB but you can use any Database of your choice.
+<b>NOTE: Make sure to use different Private and Public keys, the ones which are in this repo are only for demonstration purpose.</b>
 
 ## SignUp
 Post request. Send a POST req to api/signup with email and password in header as JSON type
@@ -37,3 +37,5 @@ The auth.js in the middleware folder verifies the token.
 Note: You can use private keys for both generating and verifying the token
 
 This module doesn't use Passport JS to Authenticate because it is very heavy for this simple task. Use passport.js only if you neeed to Authenticate using social media accounts.
+
+This uses Mongo DB for user data but you can use any Database of your choice.
