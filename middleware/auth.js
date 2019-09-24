@@ -1,12 +1,14 @@
+'use strict';
+const fs = require('fs');
+var path = require('path');
 const jwt = require('jsonwebtoken');
-const SECRET = process.env.JWT_SECRET;
+const jwtOptions = require('../keys/jwtOptions');
 
 /* The functionality of this middleware is to get the token from the header and check whether is it a valid token.
 If the token is valid the next middleware in the stack is called else Status 401 is sent
 */
 
 module.exports = function (req, res, next) {
-    console.log(`jwt token: ${SECRET}`);
     //Get token from header
     const token = req.header('our-app-token'); // KEY, the token should be sent in the header with this key
 
@@ -15,11 +17,16 @@ module.exports = function (req, res, next) {
     }
 
     try {
-        const decoded = jwt.verify(token, SECRET);
-        console.log(decoded);
+        const pathPublicKey = path.resolve('keys/', 'public.key')
+        const publicKEY = fs.readFileSync(pathPublicKey, 'utf8');
+
+        const verifyOptions = jwtOptions;
+        
+        let decoded = jwt.verify(token, publicKEY, verifyOptions);
         req.userdata = decoded.user;
         next();
     } catch (error) {
+        //console.log(error.mesage)
         res.status(401).json({ message: 'Token is not valid' });
     }
 }

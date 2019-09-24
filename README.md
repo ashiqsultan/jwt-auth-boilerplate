@@ -26,8 +26,15 @@ POST request. Send a POST req to api/login with email and password in Header as 
 
 ## Check validity of JWT token
 Send a GET request to api/protectedroute 
+This route is protected with the middleware/auth.js
+The auth.js in the middleware folder verifies the token.
 1. Without token. Response: "No Token, Authorization denied"
 2. Send a GET request with incorrect token. Response: "Token is not valid"
 3. Send a GET request with correct token. You will be sucessfully taken to the next middleware in the application stack
+
+## Mechanism
+JWT is generated using a "Private key" and "Token options"
+When a JWT token is received from the client it is checked with a "Public key" and our "Token options"
+You can use private keys for both
 
 I didn't use Passport to Authenticate because it is very heavy for this simple task. Use passport only if you neeed to Authenticate using other social media accounts
