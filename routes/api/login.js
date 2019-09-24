@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
 const User = require('../../model/User')
 const router = express.Router();
-const sentJWT = require('../../microservices/sendJWT')
+const sendJWT = require('../../microservices/sendJWT')
 
 
 /*
@@ -40,9 +40,8 @@ router.post(
                 return res
                     .status(400)
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
-            }else{
-                //Send JWT, the below method sends jwt 
-                await sentJWT(res, user);
+            } else {
+                await sendJWT(user,res); // this will send the token as a json
             }
         } catch (error) {
             console.error(error.message);
