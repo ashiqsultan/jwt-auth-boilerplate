@@ -1,12 +1,11 @@
-# Boiler plate code for JWT Authentication
+# Boilerplate code for JWT Authentication
 **Express JS, Mongo DB, JWT**
 
 ---
 
-
-This repo is very minimal, this does only two tasks
-* Sign Up
-* Login
+This repo is very minimal, this does only the following task.
+* SignUp / Register User
+* Login users
 * Check validity of token using our simple Auth middleware
 
 This uses Mongo DB but you can use any Database of your choice.
@@ -32,9 +31,9 @@ The auth.js in the middleware folder verifies the token.
 2. Send a GET request with incorrect token. Response: "Token is not valid"
 3. Send a GET request with correct token. You will be sucessfully taken to the next middleware in the application stack
 
-## Mechanism
-JWT is generated using a "Private key" and "Token options"
-When a JWT token is received from the client it is checked with a "Public key" and our "Token options"
-You can use private keys for both
+## How this works
+* JWT is generated using a "Private key" and "Token options"
+* When a JWT token is received from the client it is checked with a "Public key" and our "Token options"
+Note: You can use private keys for both generating and verifying the token
 
-I didn't use Passport to Authenticate because it is very heavy for this simple task. Use passport only if you neeed to Authenticate using other social media accounts
+This module doesn't use Passport JS to Authenticate because it is very heavy for this simple task. Use passport.js only if you neeed to Authenticate using social media accounts.
