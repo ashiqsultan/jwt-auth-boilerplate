@@ -24,6 +24,7 @@ module.exports = async function sentJWT(userdata, res) {
             email: userdata.email
         }
     };
+    console.log("Payload Prepared")
     try {
         jwt.sign(payload, privateKEY, signOptions, (error, token) => {
             if (error) { throw error };//throw error if our jwt sign goes wrong
