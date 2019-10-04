@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../../model/User')
-const sentJWT = require('../../microservices/sendJWT')
+const sendJWT = require('../../microservices/sendJWT')
 const encryptPassword = require('../../microservices/encryptPassword')
 
 /*
@@ -46,7 +46,7 @@ router.post(
             await user.save();
 
             //Return JSON Web Token
-            await sentJWT(user, res);
+            res.json(await sendJWT(user));
         } catch (error) {
             console.error(error.message);
             res.status(500).send('Server Error');
