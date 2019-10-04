@@ -41,10 +41,10 @@ router.post(
                     .status(400)
                     .json({ errors: [{ msg: 'Invalid Credentials' }] });
             } else {
-                await sendJWT(user,res); // this will send the token as a json
+                res.json(await sendJWT(user)); // this will send the token as a json
             }
         } catch (error) {
-            console.error(error.message);
+            console.error(`Error catched on post request ${error.message}`);
             res.status(500).send('Server Error');
         }
     })

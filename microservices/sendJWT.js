@@ -3,17 +3,11 @@ const fs = require('fs');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const jwtOptions = require('../keys/jwtOptions');
+const pathPrivateKey = path.resolve('keys/', 'private.key')
 
-module.exports = async function sentJWT(userdata, res) {
-    console.log("sending JWT started")
-    //const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
+const privateKEY = fs.readFileSync(pathPrivateKey, 'utf8');
 
-    // PRIVATE key
-    const pathPrivateKey = path.resolve('keys/', 'private.key')
-    const privateKEY = fs.readFileSync(pathPrivateKey, 'utf8');
-
-    let signOptions = jwtOptions;
-
+module.exports = function sentJWT(userdata) {
     //Initiate a Payload to be sent with JWT
     //You can send anything in the token, in this example we are sending only user id and email we got from database
     //but the more you add the more longer the token will be
@@ -24,15 +18,11 @@ module.exports = async function sentJWT(userdata, res) {
             email: userdata.email
         }
     };
-    console.log("Payload Prepared")
-    try {
+    const signOptions = jwtOptions;
+    return new Promise(async (resolve, reject) => {
         jwt.sign(payload, privateKEY, signOptions, (error, token) => {
-            if (error) { throw error };//throw error if our jwt sign goes wrong
-            res.json({ token })
-            console.log("sending JWT Completed")
+            if (error) reject(new Error(`JWT promise rejected \n ${error}`));
+            else resolve({ token });
         });
-    } catch (error) {
-        console.error("Error thrown by JWT Sign " + error);
-        res.status(500).send('Server Error');
-    }
+    });
 }
