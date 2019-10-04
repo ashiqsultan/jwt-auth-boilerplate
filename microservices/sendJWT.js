@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const jwtOptions = require('../keys/jwtOptions');
 
 module.exports = async function sentJWT(userdata, res) {
+    console.log("sending JWT started")
     //const PRIVATE_KEY = process.env.JWT_PRIVATE_KEY;
 
     // PRIVATE key
@@ -27,6 +28,7 @@ module.exports = async function sentJWT(userdata, res) {
         jwt.sign(payload, privateKEY, signOptions, (error, token) => {
             if (error) { throw error };//throw error if our jwt sign goes wrong
             res.json({ token })
+            console.log("sending JWT Completed")
         });
     } catch (error) {
         console.error("Error thrown by JWT Sign " + error);

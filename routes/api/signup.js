@@ -46,7 +46,7 @@ router.post(
             await user.save();
 
             //Return JSON Web Token
-            await sentJWT(res, user);
+            await sentJWT(user, res);
         } catch (error) {
             console.error(error.message);
             res.status(500).send('Server Error');

@@ -1,10 +1,12 @@
 /* Only purpose of this is to sucessfully connect to Mongo DB cloud without any warning or error */
 const mongoose = require('mongoose');
 require('dotenv').config()
+const connectionString = "mongodb://localhost:27017/studentModuleDB";
 
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
+        //await mongoose.connect(process.env.MONGODB_CONNECTION_STRING, {
+        await mongoose.connect(connectionString, {
             useNewUrlParser: true,
             useCreateIndex: true,
             useFindAndModify: false,
