@@ -8,7 +8,7 @@ const jwtOptions = require('../keys/jwtOptions');
 If the token is valid the next middleware in the stack is called else Status 401 is sent
 */
 
-module.exports = function (req, res, next) {
+module.exports = async function (req, res, next) {
     //Get token from header
     const token = req.header('our-app-token'); // KEY, the token should be sent in the header with this key
 
@@ -22,12 +22,19 @@ module.exports = function (req, res, next) {
 
         const verifyOptions = jwtOptions;
         
-        let decoded = jwt.verify(token, publicKEY, verifyOptions);
-        req.userdata = decoded.user;
-        next();
+        await jwt.verify(token, publicKEY, verifyOptions, (error, decoded) => {
+            if (error) {
+                const message = 'Token is not valid'
+                res.status(401).json({ message });
+            }
+            else{
+                req.studentid = decoded.student.id;
+                next();
+            }
+        });
     } catch (error) {
-        //console.log(error.mesage)
-        res.status(401).json({ message: 'Token is not valid' });
+        console.log('Something wrong with the auth middleware');
+        res.status(500).json({message:'Server Error'})
     }
 }
 
